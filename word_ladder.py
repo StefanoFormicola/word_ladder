@@ -1,6 +1,5 @@
 #!/bin/python
-
-
+'''
 from collections import deque
 
 
@@ -8,6 +7,7 @@ import string
 
 
 from queue import Queue
+'''
 
 
 def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
@@ -88,8 +88,8 @@ def _adjacent(word1, word2):
     '''
     if len(word1) != len(word2):
         return False
-    LC = sum(1 for i in range(len(word1)) if word1[i] != word2[i])
-    return LC == 1
+    lc = sum(1 for i in range(len(word1)) if word1[i] != word2[i])
+    return lc == 1
 
 
 def _get_text(filename):

@@ -1,9 +1,17 @@
-#!/bin/python3
+#!/bin/python
+
+
+from collections import deque
+
+
+import string
+
+
+from queue import Queue
 
 
 def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
-    '''
-    Returns a list satisfying the following properties:
+    '''Returns a list satisfying the following properties:
 
     1. the first element is `start_word`
     2. the last element is `end_word`
@@ -28,6 +36,26 @@ def word_ladder(start_word, end_word, dictionary_file='words5.dict'):
     Whenever it is impossible to generate a word ladder between the two words,
     the function returns `None`.
     '''
+    word_file = _get_text(dictionary_file)
+    dictionary = word_file.split()
+    if start_word == end_word:
+        return [start_word]
+    if end_word not in dictionary:
+        return None
+    queue = [[start_word]]
+    while queue:
+        cstack = queue.pop(0)
+        cword = cstack[-1]
+        for word in dictionary.copy():
+            if _adjacent(cword, word):
+                if word == end_word:
+                    cstack.append(word)
+                    return cstack
+                new_stack = cstack.copy()
+                new_stack.append(word)
+                queue.append(new_stack)
+                dictionary.remove(word)
+    return None
 
 
 def verify_word_ladder(ladder):
@@ -40,6 +68,12 @@ def verify_word_ladder(ladder):
     >>> verify_word_ladder(['stone', 'shone', 'phony'])
     False
     '''
+    if len(ladder) == 0:
+        return False
+    for i in range(len(ladder) - 1):
+        if not _adjacent(ladder[i], ladder[i + 1]):
+            return False
+    return True
 
 
 def _adjacent(word1, word2):
@@ -52,3 +86,16 @@ def _adjacent(word1, word2):
     >>> _adjacent('stone','money')
     False
     '''
+    if len(word1) != len(word2):
+        return False
+    LC = sum(1 for i in range(len(word1)) if word1[i] != word2[i])
+    return LC == 1
+
+
+def _get_text(filename):
+    '''
+    Takes filename and splits the test returning a list of words
+    '''
+    with open(filename, 'r', encoding='latin1') as f:
+        text = f.read()
+    return text
